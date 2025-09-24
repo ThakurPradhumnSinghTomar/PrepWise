@@ -1,3 +1,4 @@
+"use client"
 import { cn } from '@/lib/utils';
 import { vapi } from '@/lib/vapi.sdk';
 import { Span } from 'next/dist/trace';
