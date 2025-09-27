@@ -61,6 +61,11 @@ export async function signIn(params: SignInParams) {
       };
 
     await setSessionCookie(idToken);
+    return {
+      success: true,
+      message: "Signed in successfully!",
+    };
+
   } catch (error: any) {
     console.log("");
 
@@ -95,6 +100,7 @@ export async function getCurrentUser(): Promise<User | null> {
   const cookieStore = await cookies();
 
   const sessionCookie = cookieStore.get("session")?.value;
+  console.log("Session Cookie:", sessionCookie);
   if (!sessionCookie) return null;
 
   try {
@@ -105,7 +111,13 @@ export async function getCurrentUser(): Promise<User | null> {
       .collection("users")
       .doc(decodedClaims.uid)
       .get();
-    if (!userRecord.exists) return null;
+
+      console.log("User Record:", userRecord);
+      
+    if (!userRecord.exists) {
+      console.log("User record not found in database.");
+      return null;
+    }
 
     return {
       ...userRecord.data(),
@@ -122,5 +134,7 @@ export async function getCurrentUser(): Promise<User | null> {
 
 export async function isAuthenticated(){
     const user = await getCurrentUser();
+    console.log("Current User:", user);
     return !!user;
 }
+

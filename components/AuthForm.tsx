@@ -78,7 +78,9 @@ const AuthForm = ({type } : {type : FormType}) => {
                 return ;
               }
               toast.success("Signed in successfully!");
+              console.log("Redirecting to home...");
               router.push("/");
+              
             }
             else {
               const {name, email, password } = values;
@@ -181,7 +183,7 @@ const AuthForm = ({type } : {type : FormType}) => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className='btn'>{isSignIn ? "Sign In" : "Create an account"}</Button>
+              <Button type="submit" className='btn' disabled={form.formState.isSubmitting}>{isSignIn ? "Sign In" : "Create an account"}</Button>
             </form>
           </Form>
 
