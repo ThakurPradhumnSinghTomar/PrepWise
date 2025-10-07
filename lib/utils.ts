@@ -23,6 +23,11 @@ const checkIconExists = async (url: string) => {
 };
 
 export const getTechLogos = async (techArray: string[]) => {
+  //if techArray is empty, make a backup array
+  if (!techArray || techArray.length === 0) {
+    techArray = ["javascript", "react", "nodejs"];
+  }
+
   const logoURLs = techArray.map((tech) => {
     const normalized = normalizeTechName(tech);
     return {
@@ -41,7 +46,10 @@ export const getTechLogos = async (techArray: string[]) => {
   return results;
 };
 
-export const getRandomInterviewCover = () => {
+export const getRandomInterviewCover = (company : string) => {
   const randomIndex = Math.floor(Math.random() * interviewCovers.length);
-  return `/covers${interviewCovers[randomIndex]}`;
+  if(!company || company.trim() === ''){
+    return `/covers${interviewCovers[randomIndex]}`;
+  }
+  return `/covers/${company.toLowerCase()}.png`;
 };

@@ -1,0 +1,50 @@
+//how to apply middelwares in next js
+
+Understanding Next.js Middleware
+Next.js has two types of middleware you can use:
+1. Edge Middleware (Route-level protection)
+A single middleware.ts file that runs before requests are completed
+
+2. API Route Middleware (Function-level protection)
+Custom middleware functions within your API routes
+
+Method 1: Edge Middleware (Recommended for Auth)
+
+Method 1: Edge Middleware (Recommended for Auth)
+Step 1: Create a middleware.ts file in your project root (same level as app or pages directory)
+
+// middleware.ts
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+
+export function middleware(request: NextRequest) {
+  // Get token from cookies or headers
+  const token = request.cookies.get('auth-token')?.value
+  // OR from headers: const token = request.headers.get('authorization')
+  
+  // Check if user is authenticated
+  if (!token) {
+    return NextResponse.json(
+      { error: 'Unauthorized - No token provided' },
+      { status: 401 }
+    )
+  }
+
+  // Verify token (basic example - use proper JWT verification)
+  // You can also verify JWT here if needed
+  
+  // Allow the request to continue
+  return NextResponse.next()
+}
+
+// Specify which routes this middleware should run on
+export const config = {
+  matcher: [
+    '/api/protected/:path*',  // Protects all routes under /api/protected
+    '/api/admin/:path*',       // Protects all admin routes
+    // Add more patterns as needed
+  ]
+}
+
+
+

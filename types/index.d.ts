@@ -1,28 +1,16 @@
-interface Feedback {
-  id: string;
-  interviewId: string;
-  totalScore: number;
-  categoryScores: Array<{
-    name: string;
-    score: number;
-    comment: string;
-  }>;
-  strengths: string[];
-  areasForImprovement: string[];
-  finalAssessment: string;
-  createdAt: string;
-}
+import { feedback } from "@/components/InterviewCard";
 
 interface Interview {
   id: string;
   role: string;
   level: string;
   questions: string[];
-  techstack: string[];
+  techStack: string[];
   createdAt: string;
   userId: string;
   type: string;
-  finalized: boolean;
+  feedbackGiven: boolean;
+  answers?: string[];
 }
 
 interface CreateFeedbackParams {
@@ -39,12 +27,16 @@ interface User {
 }
 
 interface InterviewCardProps {
-  interviewId?: string;
+  id?: string;
   userId?: string;
   role: string;
   type: string;
-  techstack: string[];
+  techStack: string[];
   createdAt?: string;
+  givenInterviewsID: string[];
+  toAttempt : boolean;
+  company : string;
+
 }
 
 interface AgentProps {
