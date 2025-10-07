@@ -18,7 +18,12 @@ const ShowFeedbackPage = () => {
     React.useEffect(() => {
         async function fetchUser() {
             try {
-                const res = await fetch('/api/user/get-current-user');
+                const res = await fetch('/api/user/get-current-user',{
+                    method: 'GET',
+                    //send cookies in request
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                });
                 const user = await res.json();
                 
                 if (user && user.id) {
@@ -42,6 +47,7 @@ const ShowFeedbackPage = () => {
             try {
                 const response = await fetch('/api/vapi/get-all-interviews', {
                     method: 'POST',
+                    credentials: 'include',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ userid: userId }),
                 });
@@ -85,6 +91,7 @@ const ShowFeedbackPage = () => {
                 try {
                     const response = await fetch(`/api/vapi/get-feedback`, {
                         method: 'POST',
+                        credentials: 'include',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ interviewId }),
                     });

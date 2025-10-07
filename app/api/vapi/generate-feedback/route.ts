@@ -1,16 +1,15 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from "@/firebase/admin";
 import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
+import { withAuth } from '@/lib/auth-middleware';
 
 
-export async function POST(req: NextRequest) {
-    const {questions, answers, interviewId } = await req.json();
+async function handler(req: NextRequest, user: any) {
+  
+const {questions, answers, interviewId } = await req.json();
 
-    // Process the feedback here
-    console.log("Questions:", questions);
-    console.log("Answers:", answers);
-
+    
     try{
         const {text: feedbackText } = await generateText({
             model : google('gemini-2.0-flash-001'),
@@ -59,7 +58,7 @@ export async function POST(req: NextRequest) {
         } catch (parseError) {
             console.error("Failed to parse feedback as JSON:", parseError);
             console.error("Feedback text was:", feedbackText);
-            return Response.json({ 
+            return NextResponse.json({ 
                 success: false, 
                 error: "Failed to parse AI response as JSON" 
             }, { status: 500 });
@@ -82,7 +81,7 @@ export async function POST(req: NextRequest) {
         }, { merge: true });
 
         // Return response with parsed JSON
-        return Response.json({ 
+        return NextResponse.json({ 
             success: true, 
             feedback: feedbackJson 
         }, { status: 200 });
@@ -93,9 +92,11 @@ export async function POST(req: NextRequest) {
     }
     catch(err){
         console.error("Error in get-feedback:", err);
-        return Response.json({ 
+        return NextResponse.json({ 
             success: false, 
             error: err instanceof Error ? err.message : "Unknown error" 
         }, { status: 500 });
     }
 }
+
+export const POST = withAuth(handler)

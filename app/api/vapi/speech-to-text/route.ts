@@ -1,9 +1,10 @@
 // app/api/transcribe/route.ts
 import { NextRequest, NextResponse } from 'next/server';
+import { withAuth } from '@/lib/auth-middleware';
 
 const ASSEMBLYAI_API_KEY = process.env.ASSEMBLYAI_API_KEY;
 
-export async function POST(req: NextRequest) {
+async function handler(req: NextRequest, user: any) {
   try {
     if (!ASSEMBLYAI_API_KEY) {
       return NextResponse.json(
@@ -116,3 +117,5 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export const POST = withAuth(handler);

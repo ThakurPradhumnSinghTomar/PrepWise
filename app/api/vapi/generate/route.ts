@@ -2,14 +2,15 @@ import { db } from "@/firebase/admin";
 import { getRandomInterviewCover } from "@/lib/utils";
 import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
+import { NextRequest, NextResponse } from "next/server";
+import { request } from "http";
+import { withAuth } from "@/lib/auth-middleware";
 
 
-export async function GET() {
-    return Response.json({ success: true , data : 'THANK YOU!'}, { status: 200 });
-}
 
-export async function POST(request: Request) {
-    const {type,role,level,techStack,amount,userid,company} = await request.json();
+
+async function handler(req: NextRequest, user: any) {
+  const {type,role,level,techStack,amount,userid,company} = await req.json();
     //change techstack from string seprated by space to single string seprated by comma
     const techStackArray = techStack[0].split(' ');
     console.log("Tech Stack Array:", techStackArray);
@@ -47,16 +48,18 @@ export async function POST(request: Request) {
         }
 
         await db.collection('interviews').add(interview);
-        return Response.json({ success: true }, { status: 200 });
+        return NextResponse.json({ success: true }, { status: 200 });
 
     }
     catch(err){
         console.log(err);
-        return Response.json({ success: false, error: err }, { status: 500 });
+        return NextResponse.json({ success: false, error: err }, { status: 500 });
 
     }
 
 }
+
+export const POST = withAuth(handler)
 
 
 

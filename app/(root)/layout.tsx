@@ -30,6 +30,7 @@ const RootLayout = ({children} : { children: React.ReactNode }) => {
     try {
       await fetch('/api/user/signout', {
         method: 'GET',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' }
       });
       

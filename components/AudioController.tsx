@@ -112,7 +112,9 @@ export default function AudioController({ setAnswers, answers, questionId }: pro
 
       try {
         const res = await fetch("/api/vapi/speech-to-text", {
+
           method: "POST",
+          credentials: "include",
           body: formData,
         });
 

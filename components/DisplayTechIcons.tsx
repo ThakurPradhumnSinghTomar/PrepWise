@@ -1,5 +1,6 @@
 'use client'
 import { cn, getTechLogos } from '@/lib/utils'
+import { TechIconProps } from '@/types';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
 

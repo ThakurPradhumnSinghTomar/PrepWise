@@ -1,11 +1,9 @@
 import { db } from "@/firebase/admin";
+import { NextRequest, NextResponse } from "next/server";
+import { withAuth } from "@/lib/auth-middleware";
 
-export async function GET() {
-    return Response.json({ success: true, data: 'THANK YOU!' }, { status: 200 });
-}
-
-export async function POST(request: Request) {
-    const { interviewId } = await request.json();
+async function handler(req: NextRequest, user: any) {
+  const { interviewId } = await req.json();
     console.log('Received interview id:', interviewId);
 
     try {
@@ -16,7 +14,7 @@ export async function POST(request: Request) {
         // Check if document exists
         if (!interviewSnapshot.exists) {
             console.log('Interview not found for id:', interviewId);
-            return Response.json({ 
+            return NextResponse.json({ 
                 success: false, 
                 message: 'Interview not found' 
             }, { status: 404 });
@@ -28,17 +26,20 @@ export async function POST(request: Request) {
         const questionsData = interviewData?.questions || [];
         console.log('Fetched questions data:', questionsData);
 
-        return Response.json({ 
+        return NextResponse.json({ 
             success: true, 
             data: questionsData 
         }, { status: 200 });
     }
     catch (error) {
         console.error('Error fetching questions:', error);
-        return Response.json({ 
+        return NextResponse.json({ 
             success: false, 
             message: 'Failed to fetch questions',
             error: error instanceof Error ? error.message : 'Unknown error'
         }, { status: 500 });
     }
 }
+
+export const POST = withAuth(handler);
+

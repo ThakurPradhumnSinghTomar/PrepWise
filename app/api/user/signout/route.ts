@@ -1,17 +1,23 @@
+import { withAuth } from "@/lib/auth-middleware";
 import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: Request) {
+async function handler(req: NextRequest, user: any) {
   try {
     const cookieStore = await cookies();
     cookieStore.delete("session");
-    return new Response(
-      JSON.stringify({ success: true, message: "Signed out successfully." }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+    return NextResponse.json(
+      { success: true, message: "Signed out successfully." },
+      { status: 200 }
     );
   } catch (error) {
-    return new Response(
-      JSON.stringify({ success: false, message: "Sign out failed.", error: (error as Error).message }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+    return NextResponse.json(
+      { success: false, message: "Sign out failed.", error: (error as Error).message },
+      { status: 500 }
     );
     }
-  }
+}
+
+export const POST = withAuth(handler)
+
+  

@@ -38,6 +38,7 @@ const authFormSchema = (type : FormType) => z.object({
   });
 
 const page = ({type } : {type : FormType}) => {
+  const [loading, setLoading] = React.useState(false);
   useEffect(()=>{
     //get current user and set userid field
     async function fetchUser(){
@@ -74,9 +75,11 @@ const page = ({type } : {type : FormType}) => {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     try {
+      setLoading(true);
       console.log('Submitting form with values:', values);
       const response = await fetch('/api/vapi/generate', {
         method: 'POST',
+          credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -89,9 +92,11 @@ const page = ({type } : {type : FormType}) => {
         //redirect to home page
         window.location.href = '/';
       }
+
       else {
         toast.message('Failed to generate interview questions.');
       }
+      setLoading(false);
     }
     catch (err) {
       console.log(err);
@@ -258,8 +263,8 @@ const page = ({type } : {type : FormType}) => {
 
                 <Button 
                   type="submit" 
-                  className='w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-6 rounded-lg shadow-lg transition-all duration-200 mt-8' 
-                  disabled={form.formState.isSubmitting}
+                  className='w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-6 rounded-lg shadow-lg transition-all duration-200 mt-8 cursor-pointer hover:scale-103 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100' 
+                  disabled={form.formState.isSubmitting || loading}
                 >
                   {form.formState.isSubmitting ? (
                     <span className='flex items-center gap-2'>

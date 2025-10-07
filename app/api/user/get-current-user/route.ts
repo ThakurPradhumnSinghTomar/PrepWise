@@ -1,14 +1,18 @@
 //get current user
 
 import { getCurrentUser } from "@/lib/actions/auth.action";
+import { withAuth } from "@/lib/auth-middleware";
+import { NextRequest, NextResponse } from "next/server";
 
 
-export async function GET() {
+async function handler(req: NextRequest, user: any){
   try {
     const currentUser = await getCurrentUser();
-    return Response.json(currentUser, { status: 200 });
+    return NextResponse.json(currentUser, { status: 200 });
   } catch (error) {
     console.error("Error getting current user:", error);
-    return Response.json({ error: "Failed to get current user" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to get current user" }, { status: 500 });
   }
 }
+
+export const GET = withAuth(handler)

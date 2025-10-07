@@ -41,6 +41,7 @@ const InterviewCard = ({id, role, type, techStack, createdAt, givenInterviewsID,
       try {
         const response = await fetch(`/api/vapi/get-feedback`, {
           method: 'POST',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ interviewId: id }),
         });

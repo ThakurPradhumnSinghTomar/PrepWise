@@ -38,6 +38,7 @@ const TakeInterviewPage = ({params}: {params: Promise<{id: string}>}) => {
             setLoading(true);
             const res = await fetch('/api/vapi/generate-feedback', {
                 method: 'POST',
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ answers, questions, interviewId: id }),
             });
@@ -63,6 +64,7 @@ const TakeInterviewPage = ({params}: {params: Promise<{id: string}>}) => {
                 setLoading(true);
                 const res = await fetch('/api/vapi/get-all-questions', {
                     method: 'POST',
+                    credentials: 'include',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ interviewId: id }),
                     

@@ -1,12 +1,11 @@
 import { db } from "@/firebase/admin";
 import { use } from "react";
 
-export async function GET() {
-    return Response.json({ success: true , data : 'THANK YOU!'}, { status: 200 });
-}
+import { NextRequest, NextResponse } from "next/server";
+import { withAuth } from "@/lib/auth-middleware";
 
-export async function POST(request: Request) {
-    const {userid} = await request.json(); 
+async function handler(req: NextRequest, user: any) {
+  const {userid} = await req.json(); 
     console.log('Received userid:', userid);
     
    
@@ -20,10 +19,13 @@ export async function POST(request: Request) {
         console.log('Fetched interview data:', interviewData);
 
 
-        return Response.json({ success: true, data: interviewData }, { status: 200 });
+        return NextResponse.json({ success: true, data: interviewData }, { status: 200 });
     }
     catch (error) {
         console.error('Error fetching interviews:', error);
-        return Response.json({ success: false, message: 'Failed to fetch interviews' }, { status: 500 });
+        return NextResponse.json({ success: false, message: 'Failed to fetch interviews' }, { status: 500 });
     }
 }
+
+export const POST = withAuth(handler);
+

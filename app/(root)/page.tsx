@@ -18,17 +18,22 @@ export default function Page() {
   React.useEffect(() => {
     async function fetchUser() {
       try {
-        const res = await fetch('/api/user/get-current-user');
+        const res = await fetch('/api/user/get-current-user',{
+          method: 'GET',
+          //send cookies in request
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+        });
         const user = await res.json();
         
         if (user && user.id) {
           setUserId(user.id);
         } else {
-          toast.error('User not logged in');
+          console.log('User not logged in');
         }
       } catch (error) {
         console.error("Error fetching user:", error);
-        toast.error('Failed to fetch user');
+        console.log('Failed to fetch user');
       } finally {
         setIsLoading(false);
       }
@@ -44,6 +49,7 @@ export default function Page() {
       try {
         const response = await fetch('/api/vapi/get-all-interviews', {
           method: 'POST',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userid: userId }),
         });
@@ -69,6 +75,7 @@ export default function Page() {
       try {
         const response = await fetch('/api/vapi/get-given-interviews', {
           method: 'GET',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
         });
         const data = await response.json();
