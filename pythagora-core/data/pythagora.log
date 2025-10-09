@@ -1,0 +1,55 @@
+2025-10-08T14:07:09.019Z INFO SharedStateManager initialized
+2025-10-08T14:07:09.020Z INFO Is remote: false
+2025-10-08T14:07:09.021Z INFO Starting Local. Installation path: c:\Users\HP\Desktop\interview_platform
+2025-10-08T14:07:09.022Z INFO [MainProvider] Creating new MainProvider instance...
+2025-10-08T14:07:09.023Z INFO Installation path exists: c:\Users\HP\Desktop\interview_platform
+2025-10-08T14:07:09.024Z INFO Initializing database with URL: file:c:\Users\HP\Desktop\interview_platform\pythagora-core\data\database\pythagora.db
+2025-10-08T14:07:09.028Z INFO [c:\Users\HP\.vscode\extensions\pythagoratechnologies.pythagora-vs-code-2.5.13] Project root:
+2025-10-08T14:07:09.036Z INFO [c:\Users\HP\.vscode\extensions\pythagoratechnologies.pythagora-vs-code-2.5.13\prisma\schema.prisma] Schema path:
+2025-10-08T14:07:09.036Z INFO [file:c:\Users\HP\Desktop\interview_platform\pythagora-core\data\database\pythagora.db] Database URL:
+2025-10-08T14:07:09.037Z INFO [true] Schema exists:
+2025-10-08T14:07:09.038Z INFO Running prisma generate first...
+2025-10-08T14:07:12.004Z INFO [Prisma schema loaded from prisma\schema.prisma
+
+✔ Generated Prisma Client (6.16.3) to .\src\generated\prisma in 329ms
+
+] Prisma generate result:
+2025-10-08T14:07:12.007Z INFO Running prisma db push to sync schema...
+2025-10-08T14:07:16.101Z INFO [Prisma schema loaded from prisma\schema.prisma
+Datasource "db": SQLite database "pythagora.db" at "file:c:\Users\HP\Desktop\interview_platform\pythagora-core\data\database\pythagora.db"
+
+The database is already in sync with the Prisma schema.
+
+Running generate... (Use --skip-generate to skip the generators)
+[2K[1A[2K[GRunning generate... - Prisma Client
+[2K[1A[2K[G✔ Generated Prisma Client (6.16.3) to .\src\generated\prisma in 274ms
+
+] Prisma db push result:
+2025-10-08T14:07:16.102Z INFO Database initialized successfully
+2025-10-08T14:07:16.103Z INFO [Migration] Checking for database migration...
+2025-10-08T14:07:16.212Z INFO [Migration] No migration needed
+2025-10-08T14:07:16.216Z INFO Starting right sidebar creation...
+2025-10-08T14:07:16.217Z INFO Initializing MainProvider...
+2025-10-08T14:07:16.218Z INFO Creating right panel...
+2025-10-08T14:07:16.219Z INFO Creating right panel...
+2025-10-08T14:07:16.220Z INFO Closing all existing tabs...
+2025-10-08T14:07:16.248Z ERROR Error closing tabs:
+Error: Canceled
+Stack: Canceled: Canceled
+    at fl (file:///c:/Users/HP/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:7:1394)
+    at file:///c:/Users/HP/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:29:117058
+    at Array.forEach (<anonymous>)
+    at j4.dispose (file:///c:/Users/HP/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:29:116998)
+    at aJ.terminate (file:///c:/Users/HP/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:116:10194)
+    at RP.terminate (file:///c:/Users/HP/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:118:914)
+    at bs (file:///c:/Users/HP/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:391:10410)
+    at MessagePortMain.<anonymous> (file:///c:/Users/HP/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:391:6949)
+    at MessagePortMain.emit (node:events:518:28)
+    at Object.MessagePortMain._internalPort.emit (node:electron/js2c/utility_init:2:2949)
+Extra context: {
+  "message": "Canceled"
+}
+2025-10-08T14:07:16.251Z INFO Right panel webview created
+2025-10-08T14:07:16.255Z INFO Right panel HTML set successfully
+2025-10-08T14:07:16.256Z INFO Right panel setup completed
+2025-10-08T14:07:16.257Z INFO Setting up right panel dependencies...
