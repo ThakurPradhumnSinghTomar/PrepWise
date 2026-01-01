@@ -1,4 +1,5 @@
 'use client';
+//this is client component
 import { useState, useRef, Dispatch, SetStateAction } from "react";
 import { Mic, Square, Play, FileText } from "lucide-react";
 import { answers } from "./Question";
