@@ -1,4 +1,5 @@
-//how to apply middelwares in next js
+how to apply middelwares in next js
+
 
 Understanding Next.js Middleware
 Next.js has two types of middleware you can use:
@@ -46,5 +47,5 @@ export const config = {
   ]
 }
 
-
+i dont unserstand anything in this, study this part again...
 

@@ -1,24 +1,31 @@
-# Use official Node.js 22.16.0 image as the base
-FROM node:22.16.0
+FROM node:22.16.0 AS builder
 
-# Set working directory inside the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
-
-# Install project dependencies
 RUN npm install
 
-# Copy the rest of the application code to the working directory
 COPY . .
 
-# Build the Next.js app for production
+# Set build-time env to skip API routes during build
+ENV SKIP_ENV_VALIDATION=true
+
+
+# Build the app
 RUN npm run build
 
-# Expose the production port
+# Production stage
+FROM node:22.16.0
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install --production
+
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+
 EXPOSE 3000
 
-# Start the app in production mode
-CMD ["npm", "start"]
-
+CMD ["node", "server.js"]

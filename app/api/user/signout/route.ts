@@ -18,6 +18,6 @@ async function handler(req: NextRequest, user: any) {
     }
 }
 
-export const POST = withAuth(handler)
+export const GET = withAuth(handler)
 
   

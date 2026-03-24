@@ -56,3 +56,20 @@ export function withAuth(
     return handler(req, session.user)
   }
 }
+
+/*
+  Firebase-based authentication middleware for Next.js App Router routes.
+
+  1. verifySession():
+     - Reads 'session' cookie from browser.
+     - Verifies it with Firebase Admin SDK.
+     - Returns either authenticated user info or an error.
+
+  2. withAuth(handler):
+     - Wraps API route handlers to protect them.
+     - If no valid session, returns 401 response.
+     - If session valid, passes `user` data to the handler.
+
+  Usage:
+     export const GET = withAuth(handler); in route.ts files
+*/

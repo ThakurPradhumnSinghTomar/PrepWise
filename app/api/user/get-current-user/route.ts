@@ -16,3 +16,43 @@ async function handler(req: NextRequest, user: any){
 }
 
 export const GET = withAuth(handler)
+
+/*
+
+Normal method to write route.ts without this withAuth is : 
+
+export async function GET(req: NextRequest) { ... }
+export async function POST(req: NextRequest) { ... }
+
+*/
+
+/*
+
+✅ You’re exporting your GET route handler function,
+but instead of directly using GET(req),
+you’re wrapping your handler with withAuth to add authentication logic.
+
+So basically:
+
+handler = the actual logic for getting the current user.
+
+withAuth(handler) = a wrapper that ensures the user is authenticated before running your handler.
+
+*/
+
+/*
+
+withAuth is a custom middleware function you (or your team) made in your project —
+likely defined in @/lib/auth-middleware.ts.
+
+Its job is usually to:
+
+Check if the request has a valid authentication token (JWT, cookie, session, etc.)
+
+Decode the user info.
+
+If valid, pass the user data to your route handler (handler(req, user)).
+
+If not valid, return an error or redirect.
+
+*/
