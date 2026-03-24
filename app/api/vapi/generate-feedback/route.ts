@@ -1,102 +1,111 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from "@/firebase/admin";
-import { generateText } from "ai";
-import { google } from "@ai-sdk/google";
+import OpenAI from "openai";
 import { withAuth } from '@/lib/auth-middleware';
 
+const openai = new OpenAI({
+  apiKey: process.env.OPENROUTER_API_KEY,
+  baseURL: "https://openrouter.ai/api/v1",
+});
 
 async function handler(req: NextRequest, user: any) {
-  
-const {questions, answers, interviewId } = await req.json();
+  const { questions, answers, interviewId } = await req.json();
 
-    
-    try{
-        const {text: feedbackText } = await generateText({
-            model : google('gemini-2.0-flash-001'),
-            prompt : `Provide constructive feedback on the following interview answers. For Each question return Highlight strengths and areas for improvement and than a overall highlight strengths and areas for improvement with a score out of 100 in a json form and dont return anything else than json data as this is a api call.
-                        the responsse should be in this format:
-                        {
-                            "overall": {
-                                "strengths": [],
-                                "areas_for_improvement": [],
-                                "score": 0
-                            },
-                            
-                            "question_1": {
-                                    "strengths": [],
-                                    "areas_for_improvement": [],
-                                    "score": 0
-                                },
-                            "question_2": {
-                                    "strengths": [],
-                                    "areas_for_improvement": [],
-                                    "score": 0
-                                }
-                            //and so on for each question
-                            
-                        }
+  try {
+    const prompt = `Provide constructive feedback on the following interview answers.
 
-                        questions were: ${JSON.stringify(questions)}.
-                        The answers given were: ${JSON.stringify(answers)}.
-                        Please return the feedback in a concise manner.                        Thank you! <3
-                    `,
-        });
+For EACH question:
+- Highlight strengths
+- Highlight areas for improvement
+- Give a score out of 100
 
-        console.log("Raw Feedback Text:", feedbackText);
+Also provide an overall summary.
 
-        // Parse the feedback string to JSON
-        let feedbackJson;
-        try {
-            // Remove markdown code blocks if present (```json and ```)
-            const cleanedText = feedbackText
-                .replace(/```json\n?/g, '')
-                .replace(/```\n?/g, '')
-                .trim();
-            
-            feedbackJson = JSON.parse(cleanedText);
-            console.log("Parsed Feedback JSON:", feedbackJson);
-        } catch (parseError) {
-            console.error("Failed to parse feedback as JSON:", parseError);
-            console.error("Feedback text was:", feedbackText);
-            return NextResponse.json({ 
-                success: false, 
-                error: "Failed to parse AI response as JSON" 
-            }, { status: 500 });
-        }
-
-        // Save the parsed JSON feedback to Firestore
-        await db.collection('interview_feedback').doc(interviewId).set({
-            interviewId,
-            feedback: feedbackJson,  // Store as JSON object, not string
-            timestamp: new Date(),
-        }, { merge: true });
-
-        console.log("Feedback saved to Firestore for interviewId:", interviewId);
-
-
-        //save the answers to the interview document in interviews collection in firebase
-        await db.collection('interviews').doc(interviewId).set({
-            answers: answers,
-            feedbackGiven: true,
-        }, { merge: true });
-
-        // Return response with parsed JSON
-        return NextResponse.json({ 
-            success: true, 
-            feedback: feedbackJson 
-        }, { status: 200 });
-
-        console.log("Feedback process completed successfully.");
-        console.log("answers:", answers);
-
-    }
-    catch(err){
-        console.error("Error in get-feedback:", err);
-        return NextResponse.json({ 
-            success: false, 
-            error: err instanceof Error ? err.message : "Unknown error" 
-        }, { status: 500 });
-    }
+Return ONLY JSON in this format:
+{
+  "overall": {
+    "strengths": [],
+    "areas_for_improvement": [],
+    "score": 0
+  },
+  "question_1": {
+    "strengths": [],
+    "areas_for_improvement": [],
+    "score": 0
+  }
 }
 
-export const POST = withAuth(handler)
+Questions: ${JSON.stringify(questions)}
+Answers: ${JSON.stringify(answers)}
+`;
+
+    const completion = await openai.chat.completions.create({
+      model: "openrouter/auto",
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+    });
+
+    const feedbackText =
+      completion.choices[0]?.message?.content?.trim() || "";
+
+    console.log("Raw Feedback Text:", feedbackText);
+
+    // 🧠 CLEAN + SAFE PARSING
+    let feedbackJson;
+
+    try {
+      const cleanedText = feedbackText
+        .replace(/```json\n?/g, "")
+        .replace(/```\n?/g, "")
+        .trim();
+
+      feedbackJson = JSON.parse(cleanedText);
+    } catch {
+      // fallback: extract JSON manually
+      const match = feedbackText.match(/\{[\s\S]*\}/);
+      if (match) {
+        try {
+          feedbackJson = JSON.parse(match[0]);
+        } catch {
+          throw new Error("Invalid JSON from AI");
+        }
+      } else {
+        throw new Error("No JSON found in AI response");
+      }
+    }
+
+    console.log("Parsed Feedback JSON:", feedbackJson);
+
+    // ✅ Save feedback
+    await db.collection('interview_feedback').doc(interviewId).set({
+      interviewId,
+      feedback: feedbackJson,
+      timestamp: new Date(),
+    }, { merge: true });
+
+    // ✅ Save answers + mark feedback given
+    await db.collection('interviews').doc(interviewId).set({
+      answers: answers,
+      feedbackGiven: true,
+    }, { merge: true });
+
+    return NextResponse.json({
+      success: true,
+      feedback: feedbackJson,
+    }, { status: 200 });
+
+  } catch (err: any) {
+    console.error("AI ERROR:", err?.message);
+
+    return NextResponse.json({
+      success: false,
+      error: "Feedback generation failed",
+    }, { status: 500 });
+  }
+}
+
+export const POST = withAuth(handler);
