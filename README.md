@@ -2,7 +2,7 @@
 
 PrepWise is an AI-powered interview preparation platform built with **Next.js 16**, **React 19**, **TypeScript**, and **Firebase**. It helps users practice realistic interview sessions, review generated insights, and track preparation progress through a modern web interface.
 
-> Repository: https://github.com/ThakurPradhumnSinghTomar/PrepWise
+> Live Link : [-wise-phi-gray.vercel.app](https://prep-wise-phi-gray.vercel.app/)
 
 ---
 
